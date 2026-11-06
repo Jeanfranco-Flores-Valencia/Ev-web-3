@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- POM agregador: solo sirve para compilar todos los microservicios con un unico comando (mvn package).
+     Cada microservicio es un proyecto Spring Boot independiente con su propio pom.xml. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pe.edu.tecsup.veterinaria</groupId>
+    <artifactId>veterinaria-microservicios</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Sistema de Atencion Veterinaria - Microservicios</name>
+
+    <modules>
+        <module>eureka-server</module>
+        <module>api-gateway</module>
+        <module>propietario-service</module>
+        <module>mascota-service</module>
+        <module>consulta-service</module>
+    </modules>
+</project>

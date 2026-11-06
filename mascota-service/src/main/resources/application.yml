@@ -1,0 +1,125 @@
+# ==========================================================
+#  mascota-service  -  configuracion comun a todos los perfiles
+# ==========================================================
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: mascota-service
+  profiles:
+    # Perfil por defecto: dev  (cambiar con -Dspring-boot.run.profiles=test|prod o SPRING_PROFILES_ACTIVE)
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  jpa:
+    open-in-view: false
+  jackson:
+    time-zone: America/Lima
+    serialization:
+      write-dates-as-timestamps: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# URL logica del microservicio Propietario (se resuelve con Eureka + LoadBalancer)
+servicios:
+  propietario:
+    url: ${PROPIETARIO_SERVICE_URL:http://propietario-service}
+
+---
+# ==========================================================
+#  Perfil DEV: MySQL local, crea/actualiza tablas y carga datos de prueba
+# ==========================================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/bd_mascota?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      platform: mysql   # ejecuta data-mysql.sql (datos de prueba)
+logging:
+  level:
+    pe.edu.tecsup: DEBUG
+
+---
+# ==========================================================
+#  Perfil TEST: base de datos H2 en memoria (no necesita MySQL ni Eureka)
+# ==========================================================
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:bd_mascota;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      platform: h2      # ejecuta data-h2.sql (datos de prueba)
+eureka:
+  client:
+    enabled: false
+
+---
+# ==========================================================
+#  Perfil PROD: credenciales por variables de entorno, sin DDL automatico
+#  ni datos de prueba, logs reducidos
+# ==========================================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/bd_mascota?useSSL=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  sql:
+    init:
+      mode: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+logging:
+  level:
+    root: WARN
+    pe.edu.tecsup: INFO

@@ -1,0 +1,71 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          # Rutas: el prefijo lb:// resuelve la instancia a traves de Eureka (balanceo de carga)
+          routes:
+            - id: propietario-service
+              uri: lb://propietario-service
+              predicates:
+                - Path=/api/propietarios/**
+            - id: mascota-service
+              uri: lb://mascota-service
+              predicates:
+                - Path=/api/mascotas/**
+            - id: consulta-service
+              uri: lb://consulta-service
+              predicates:
+                - Path=/api/consultas/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+logging:
+  level:
+    root: WARN
