@@ -14,7 +14,7 @@ propio puerto. Se registran en **Eureka Server** y se accede a ellos a través d
 
 | Herramienta | Versión |
 |---|---|
-| Java (JDK) | 17 o superior |
+| Java (JDK) | 17 o superior (probado con 21 y 25) |
 | Maven | 3.9+ (o el de IntelliJ/STS) |
 | MySQL | 8.x (también funciona MariaDB 10.x / XAMPP) |
 | Postman | cualquiera reciente |
@@ -52,7 +52,7 @@ Las bases de datos no comparten tablas ni claves foráneas. Las referencias entr
 **solo IDs** (`idPropietario`, `idMascota`) y se validan **por REST** (`RestClient` + `@LoadBalanced`
 con el nombre lógico registrado en Eureka, p. ej. `http://propietario-service`).
 
-En [`docs/diagrama.md`](docs/diagrama.md) están el diagrama de clases y el de bases de datos.
+En [`DIAGRAMA.md`](DIAGRAMA.md) están el diagrama de clases y el de bases de datos.
 
 ### Estructura de cada microservicio
 
@@ -241,5 +241,6 @@ consulta de esa mascota → ver `/api/consultas/{id}/detalle` → actualizar y e
 
 ## 9. Documentación adicional
 
-- [`docs/diagrama.md`](docs/diagrama.md): diagramas de microservicios, bases de datos y secuencia.
-- [`docs/conclusiones.md`](docs/conclusiones.md): conclusiones, dificultad con su solución y guía para la sustentación.
+- [`DIAGRAMA.md`](DIAGRAMA.md): diagramas de microservicios, bases de datos y secuencia.
+- [`CONCLUSIONES.md`](CONCLUSIONES.md): conclusiones, dificultad con su solución y guía para la sustentación.
+- [`docs/PPT_EV03_DAW.pptx`](docs/PPT_EV03_DAW.pptx): presentación para la sustentación.
